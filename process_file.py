@@ -43,15 +43,13 @@ class DeepLabModel(object):
 
 
     #####
-
-    with tf.compat.v1.Session() as sess:
+    self.sess = tf.compat.v1.Session()
+    if True: #with tf.compat.v1.Session() as sess:
         with tf.io.gfile.GFile(tarball_path,'rb') as f:
             graph_def = tf.compat.v1.GraphDef()
         graph_def.ParseFromString(f.read())
-        sess.graph.as_default()
+        self.sess.graph.as_default()
         tf.import_graph_def(graph_def, name='')
-
-        self.sess = sess
 
 
   def run(self, image):
