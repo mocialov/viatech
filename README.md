@@ -34,5 +34,12 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
 * sudo apt update && sudo apt install -y libsm6 libxext6 libxrender-dev
 * sudo pip3 install opencv-python --no-cache-dir
 
+* sudo pip3 install -U torch==1.5.1+cpu torchvision==0.6.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+* sudo pip3 install -U cython pyyaml==5.1
+* sudo pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
+* sudo pip3 install -U piexif
+* sudo pip3 install -U detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cpu/torch1.5/index.html
 
 vim /var/log/apache2/error.log
+
+curl -L -X POST -F "file=@ladybugImageOutput_00000012.jpg" ec2-18-222-109-27.us-east-2.compute.amazonaws.com
