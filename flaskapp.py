@@ -1,15 +1,23 @@
 import os
-from flask import Flask, flash, request, redirect, url_for
-from werkzeug.utils import secure_filename
-from process_file import *
+os.environ['FVCORE_CACHE'] = "/home/ubuntu/.torch/fvcore_cache/"
 
+from flask import Flask, flash, request, redirect, url_for, jsonify, json
+from werkzeug.utils import secure_filename
+#from process_file import *
+from image_process import *
+import numpy as np
+import cv2
+from PIL import Image
 
 UPLOAD_FOLDER = '/home/ubuntu/flaskapp/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
+app.secret_key = "\xbe\xc1\xd5\x16\x03\xf87\xdd\xf5\xe7y\x03\xdf1\xac\xca2\x00\xee\x1d\xdc\xc2M+"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+
+predictor = None
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -17,22 +25,42 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
+    global predictor
+
+    if predictor == None:
+        predictor = load_model()
+
     if request.method == 'POST':
         # check if the post request has the file part
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
-        file = request.files['file']
+        print ("reading file")
+        file = request.files['file'] #Image.open(request.files['file']) #cv2.imdecode(np.fromstring(request.files['file'].read(), np.uint8), cv2.IMREAD_UNCHANGED) #request.files['file']
+        print("done reading file")
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
+            print ("no selected file")
             flash('No selected file')
             return redirect(request.url)
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('uploaded_file',
-                                    filename=filename))
+            Image.open(file).save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            print("processing image")
+            predict(os.path.join(app.config['UPLOAD_FOLDER'], filename), predictor)
+            print("done processing image")
+            response = app.response_class(
+                response=os.path.join(app.config['UPLOAD_FOLDER'], filename),
+                status=200,
+                mimetype='text/plain'
+            )
+            return response
+            #return redirect(url_for('uploaded_file',
+            #                        filename=filename))
+        else:
+            print ("something else")
+
     return '''
     <!doctype html>
     <title>Upload new File</title>
@@ -50,3 +78,12 @@ from flask import send_from_directory
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename)
+
+'''
+if __name__ == "__main__":
+    #global predictor
+
+    print(("* Loading Keras model and Flask starting server..."
+        "please wait until server has fully started"))
+    predictor = load_model()
+    app.run()'''
