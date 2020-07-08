@@ -57,13 +57,15 @@ def chunks(lst, n):
         yield lst[i:i + n]
 
 #detectron2 prediction and blurring mask
-def predict(path, predictor):
+def predict(img, predictor, metadata):
     print("predicting")
 
-    img = PIL.Image.open(path)
+    #img = PIL.Image.open(path)
+    #exif_dict = img.getexif()
+    #print ("exif", metadata)
 
     #extract metadata
-    exif_dict = piexif.load(img.info['exif'])
+    #exif_dict = piexif.load(img.info['exif'])
 
     im = np.asarray(img)
     #im = cv2.resize(im, (400, 200))
@@ -78,7 +80,7 @@ def predict(path, predictor):
     print ("actual blur")
     #blur = cv2.blur(im,(30,30),0) #(30,30) blurring kernel
     #blur = im
-    blur = PIL.Image.fromarray(im).filter(ImageFilter.GaussianBlur(50))
+    blur = PIL.Image.fromarray(im).filter(ImageFilter.GaussianBlur(4))
     blur = np.array(blur)
 
     print ("filtering masks")
@@ -99,15 +101,15 @@ def predict(path, predictor):
     #display(Image.fromarray(out))
 
     #dump metadata
-    print("adding exif")
-    exif_bytes = piexif.dump(exif_dict)
+    print("adding exif", metadata)
+    exif_bytes = piexif.dump(metadata)
 
-    print ("saving")
+    print ("saving", exif_bytes)
     #save image
-    PIL.Image.fromarray(out).save(path)#, exif=exif_bytes)
+    #PIL.Image.fromarray(out).save(path, exif=exif_bytes)
 
     print("done")
     #thread_finished[thread_id] = True
 
-    return True
+    return PIL.Image.fromarray(out)
 

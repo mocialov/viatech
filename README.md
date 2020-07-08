@@ -42,4 +42,4 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
 
 vim /var/log/apache2/error.log
 
-curl -L -X POST -F "file=@ladybugImageOutput_00000012.jpg" ec2-18-222-109-27.us-east-2.compute.amazonaws.com
+curl -L -X POST -F "file=@ladybugImageOutput_00000012.jpg" ec2-3-21-46-249.us-east-2.compute.amazonaws.com --output image.jpg
