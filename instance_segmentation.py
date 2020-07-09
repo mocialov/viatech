@@ -10,7 +10,7 @@ import tarfile
 import os
 import time
 import cv2
-
+import PIL
 
 class DeepLabModel(object):
   """Class to load deeplab model and run inference."""
@@ -68,10 +68,11 @@ class DeepLabModel(object):
         self.OUTPUT_TENSOR_NAME,
         feed_dict={self.INPUT_TENSOR_NAME: [np.asarray(resized_image)]})
     seg_map = batch_seg_map[0]
-    print(seg_map.shape, resized_image.size)
-    seg_map = cv2.resize(seg_map, dsize=(width, height), interpolation=cv2.INTER_NEAREST)
-    resized_image = resized_image.resize((width, height), Image.ANTIALIAS)
-    print(seg_map.shape, resized_image.size)
+    #print(seg_map.shape, resized_image.size)
+    #seg_map = Image.fromarray(seg_map, 'L').resize((width, height), resample=PIL.Image.NEAREST) #cv2.resize(seg_map, dsize=(width, height), interpolation=cv2.INTER_NEAREST)
+    #seg_map = np.array(seg_map)
+    #resized_image = resized_image.resize((width, height), Image.ANTIALIAS)
+    #print(seg_map.shape, resized_image.size)
     return resized_image, seg_map
 
 
@@ -118,11 +119,11 @@ def fig2data ( fig ):
  
     # Get the RGBA buffer from the figure
     w,h = fig.canvas.get_width_height()
-    buf = numpy.fromstring ( fig.canvas.tostring_argb(), dtype=numpy.uint8 )
+    buf = np.fromstring ( fig.canvas.tostring_argb(), dtype=np.uint8 )
     buf.shape = ( w, h,4 )
  
     # canvas.tostring_argb give pixmap in ARGB mode. Roll the ALPHA channel to have it in RGBA mode
-    buf = numpy.roll ( buf, 3, axis = 2 )
+    buf = np.roll ( buf, 3, axis = 2 )
     return buf
 
 def fig2img ( fig ):
@@ -156,7 +157,15 @@ def vis_segmentation(image, seg_map):
   ax.tick_params(width=0.0)
   plt.grid('off')
   #plt.show()
-  return fig2img ( a_figure )
+  plt.draw()
+  import io
+  buf = io.BytesIO()
+  plt.savefig(buf, format='jpg')
+  buf.seek(0)
+  im = Image.open(buf)
+  plt.draw()
+  return im
+  #return fig2img(plt.gcf())
 
 
 def process_image_detectron2(original_im):
@@ -166,8 +175,15 @@ def process_image_detectron2(original_im):
   ellapsed_time = time.time() - start_time
   print("Ellapsed time: " + str(ellapsed_time) + "s")
 
+  print("before resize")
+  from skimage.transform import resize, rescale
+  seg_map2 = resize(seg_map, original_im.size, preserve_range=True, order=1)
+  print("afer resize")
+  seg_map2 = seg_map2.astype(int)
+
   # show inference result
-  return vis_segmentation(resized_im, seg_map)
+  #return vis_segmentation(resized_im, seg_map)
+  return Image.fromarray(seg_map2)
 
 LABEL_NAMES = np.asarray([
     'road', 'sidewalk', 'building', 'wall', 'fence', 'pole', 'traffic light',

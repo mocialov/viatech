@@ -113,3 +113,6 @@ def predict(img, predictor, metadata):
 
     return PIL.Image.fromarray(out)
 
+
+if __name__ == '__main__':
+    load_model()
