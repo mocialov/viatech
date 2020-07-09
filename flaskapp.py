@@ -13,6 +13,7 @@ from PIL import Image
 import piexif
 from PIL.ExifTags import TAGS
 import base64
+from instance_segmentation import *
 
 UPLOAD_FOLDER = '/home/ubuntu/flaskapp/uploads'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -20,6 +21,7 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask(__name__)
 app.secret_key = "\xbe\xc1\xd5\x16\x03\xf87\xdd\xf5\xe7y\x03\xdf1\xac\xca2\x00\xee\x1d\xdc\xc2M+"
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 
 predictor = None
@@ -58,6 +60,7 @@ def upload_file():
             #Image.open(file).save(os.path.join(app.config['UPLOAD_FOLDER'], filename), exif=exif_bytes)
             print("processing image")
             processed = predict(Image.open(file), predictor, metadata)
+            #process_image_detectron2(Image.open(file))
             imgByteArr = io.BytesIO()
             exif_bytes = piexif.dump(metadata)
             processed.save(imgByteArr, format='JPEG', exif=exif_bytes)
