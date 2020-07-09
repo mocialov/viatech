@@ -16,7 +16,7 @@
 * sudo vim /etc/apache2/sites-enabled/000-default.conf:
 ```
 WSGIDaemonProcess flaskapp threads=5
-WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
+WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBAL}
 
 <Directory flaskapp>
         WSGIProcessGroup flaskapp
