@@ -39,6 +39,7 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi
 * sudo pip3 install -U 'git+https://github.com/cocodataset/cocoapi.git#subdirectory=PythonAPI'
 * sudo pip3 install -U piexif
 * sudo pip3 install -U detectron2 -f https://dl.fbaipublicfiles.com/detectron2/wheels/cpu/torch1.5/index.html
+* sudo pip3 install scikit-image
 
 vim /var/log/apache2/error.log
 
