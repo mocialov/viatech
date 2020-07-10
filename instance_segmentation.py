@@ -1,7 +1,9 @@
 import numpy as np
 from PIL import Image
 
+print("before tf")
 import tensorflow as tf
+print("afer tf")
 import matplotlib as mpl
 mpl.use('Agg')
 from matplotlib import gridspec
@@ -168,7 +170,7 @@ def vis_segmentation(image, seg_map):
   #return fig2img(plt.gcf())
 
 
-def process_image_detectron2(original_im):
+def process_image_detectron2(original_im, model):
   # inferences DeepLab model
   start_time = time.time()
   resized_im, seg_map = model.run(original_im)
@@ -177,26 +179,30 @@ def process_image_detectron2(original_im):
 
   print("before resize")
   from skimage.transform import resize, rescale
-  seg_map2 = resize(seg_map, original_im.size, preserve_range=True, order=1)
+  seg_map2 = resize(seg_map, (original_im.size[1], original_im.size[0]), preserve_range=True, order=1)
   print("afer resize")
-  seg_map2 = seg_map2.astype(int)
+  #seg_map2 = seg_map2.astype(int)
 
   # show inference result
   #return vis_segmentation(resized_im, seg_map)
-  return Image.fromarray(seg_map2)
-
-LABEL_NAMES = np.asarray([
-    'road', 'sidewalk', 'building', 'wall', 'fence', 'pole', 'traffic light',
-    'traffic sign', 'vegetation', 'terrain', 'sky', 'person', 'rider', 'car', 'truck',
-    'bus', 'train', 'motorcycle', 'bycycle'])
+  return Image.fromarray(np.uint8(seg_map2)*100, 'L')
 
 
-FULL_LABEL_MAP = np.arange(len(LABEL_NAMES)).reshape(len(LABEL_NAMES), 1)
-FULL_COLOR_MAP = label_to_color_image(FULL_LABEL_MAP)
+def load_detectron_model():
+    LABEL_NAMES = np.asarray([
+        'road', 'sidewalk', 'building', 'wall', 'fence', 'pole', 'traffic light',
+        'traffic sign', 'vegetation', 'terrain', 'sky', 'person', 'rider', 'car', 'truck',
+        'bus', 'train', 'motorcycle', 'bycycle'])
 
-model_path = "/home/ubuntu/flaskapp/train_fine/frozen_inference_graph.pb"
 
-# load model
-model = DeepLabModel(model_path)
+    FULL_LABEL_MAP = np.arange(len(LABEL_NAMES)).reshape(len(LABEL_NAMES), 1)
+    FULL_COLOR_MAP = label_to_color_image(FULL_LABEL_MAP)
+
+    model_path = "/home/ubuntu/flaskapp/train_fine/frozen_inference_graph.pb"
+
+    # load model
+    model = DeepLabModel(model_path)
+
+    return model
 
 

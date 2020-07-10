@@ -25,12 +25,70 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 predictor = None
+predictor_detectron = None
+
 
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['GET', 'POST'])
+
+@app.route('/segment', methods=['POST'])
+def upload_file2():
+    global predictor_detectron
+
+    if predictor_detectron == None:
+        predictor_detectron = load_detectron_model()
+
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        print ("reading file")
+        file = request.files['file'] #request.files['file'] #Image.open(request.files['file']) #cv2.imdecode(np.fromstring(request.files['file'].read(), np.uint8), cv2.IMREAD_UNCHANGED) #request.files['file']
+        print("done reading file")#, PIL.Image.open(file)._getexif())
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            print ("no selected file")
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            metadata = piexif.load(PIL.Image.open(file).info["exif"])
+            #print(PIL.Image.open(file)._getexif()[item])
+            #piexif.load("foo1.jpg")
+            exif_bytes = piexif.dump(metadata)
+            #Image.open(file).save(os.path.join(app.config['UPLOAD_FOLDER'], filename), exif=exif_bytes)
+            print("processing image")
+            #processed = predict(Image.open(file), predictor, metadata)
+            processed = process_image_detectron2(Image.open(file), predictor_detectron)
+            imgByteArr = io.BytesIO()
+            exif_bytes = piexif.dump(metadata)
+            processed.save(imgByteArr, format='JPEG', exif=exif_bytes)
+            imgByteArr = imgByteArr.getvalue()
+            
+            response = make_response(imgByteArr) #send_file(encoded, mimetype='image/jpg')
+            response.headers.set('Content-Type', 'image/jpeg')
+            response.headers.set('Content-Disposition', 'attachment', filename='response.jpg')
+            return response
+        else:
+            print ("something else")
+
+    return '''
+    <!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    '''
+
+
+
+@app.route('/blur', methods=['POST'])
 def upload_file():
     global predictor
 
@@ -59,8 +117,8 @@ def upload_file():
             exif_bytes = piexif.dump(metadata)
             #Image.open(file).save(os.path.join(app.config['UPLOAD_FOLDER'], filename), exif=exif_bytes)
             print("processing image")
-            #processed = predict(Image.open(file), predictor, metadata)
-            processed = process_image_detectron2(Image.open(file))
+            processed = predict(Image.open(file), predictor, metadata)
+            #processed = process_image_detectron2(Image.open(file))
             imgByteArr = io.BytesIO()
             exif_bytes = piexif.dump(metadata)
             processed.save(imgByteArr, format='JPEG', exif=exif_bytes)
