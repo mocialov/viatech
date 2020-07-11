@@ -80,3 +80,7 @@ Example output:
     },...
 }
 ```
+
+## Concerns:
+1) models loaded with every request
+2) too much data is sent back for every pixel
