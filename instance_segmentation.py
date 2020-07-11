@@ -16,7 +16,6 @@ class DeepLabModel(object):
 
   INPUT_TENSOR_NAME = 'ImageTensor:0'
   OUTPUT_TENSOR_NAME = 'SemanticPredictions:0'
-  INPUT_SIZE = 513
   FROZEN_GRAPH_NAME = 'frozen_inference_graph'
 
   def __init__(self, tarball_path):
@@ -38,7 +37,7 @@ class DeepLabModel(object):
     """
     
     width, height = image.size
-    resize_ratio = 1.0 * self.INPUT_SIZE / max(width, height)
+    resize_ratio = 1.0 * config.MODEL_INPUT_SIZE / max(width, height)
     target_size = (int(resize_ratio * width), int(resize_ratio * height))
     resized_image = image.convert('RGB').resize(target_size, Image.ANTIALIAS)
     batch_seg_map = self.sess.run(self.OUTPUT_TENSOR_NAME, feed_dict={self.INPUT_TENSOR_NAME: [np.asarray(resized_image)]})

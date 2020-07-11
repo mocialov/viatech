@@ -63,7 +63,8 @@ def upload_file2():
             xs = np.where(processed == config.KNOWN_CLASSES_CITYSCAPES[requested_item])[0]
             ys = np.where(processed == config.KNOWN_CLASSES_CITYSCAPES[requested_item])[1]
 
-        all_items_dict[requested_item] = {'xs': ','.join(map(str, xs)), 'ys': ','.join(map(str, ys))}
+            all_items_dict[requested_item] = {'xs': ','.join(map(str, xs)), 'ys': ','.join(map(str, ys))}
+        
         response_json = json.dumps(all_items_dict)
 
         response = app.response_class(

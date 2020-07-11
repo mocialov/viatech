@@ -39,3 +39,5 @@ PYTORCH_DOWNLOADS_PATH = "/home/ubuntu/.torch/fvcore_cache/"
 CITYSCAPES_MODEL_PATH = "/home/ubuntu/flaskapp/train_fine/frozen_inference_graph.pb"
 
 DETECTRON2_MODEL = "COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"
+
+MODEL_INPUT_SIZE = 513
