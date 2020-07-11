@@ -45,4 +45,6 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
 
 vim /var/log/apache2/error.log
 
-curl -L -X POST -F "file=@ladybugImageOutput_00000012.jpg" ec2-3-21-46-249.us-east-2.compute.amazonaws.com --output image.jpg
+curl -L -X POST -F 'file=@ladybugImageOutput_00000012.jpg' 0.0.0.0/blur --output image.jpg
+
+curl -L -X POST -F 'file=@ladybugImageOutput_00000012.jpg' 0.0.0.0/segment?instances=road,sidewalk,building,wall,fence,pole,traffic_light,traffic_sign,vegetation,terrain,sky,person,rider,car,truck,bus,train,motorcycle,bicycle,misc
