@@ -42,6 +42,7 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
 * sudo pip3 install scikit-image
 * wget http://download.tensorflow.org/models/deeplab_cityscapes_xception71_trainfine_2018_09_08.tar.gz
 * tar -xzvf deeplab_cityscapes_xception71_trainfine_2018_09_08.tar.gz
+* python3 image_process.py
 
 vim /var/log/apache2/error.log
 
