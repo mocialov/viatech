@@ -26,8 +26,6 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
 </Directory>
 ```
 * sudo apachectl restart
-* mkdir uploads
-* chmod 777 uploads
 * sudo pip3 install numpy --no-cache-dir
 * sudo pip3 install Pillow --no-cache-dir
 * sudo pip3 install tensorflow --no-cache-dir
@@ -43,6 +41,7 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
 * wget http://download.tensorflow.org/models/deeplab_cityscapes_xception71_trainfine_2018_09_08.tar.gz
 * tar -xzvf deeplab_cityscapes_xception71_trainfine_2018_09_08.tar.gz
 * python3 image_process.py
+* chmod 777 ...
 
 vim /var/log/apache2/error.log
 
