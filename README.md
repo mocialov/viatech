@@ -45,6 +45,22 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
 
 vim /var/log/apache2/error.log
 
+Blur image:
+```
 curl -L -X POST -F 'file=@ladybugImageOutput_00000012.jpg' 0.0.0.0/blur --output image.jpg
+```
+returns blurred image
 
+Get polygons for each class:
+```
 curl -L -X POST -F 'file=@ladybugImageOutput_00000012.jpg' 0.0.0.0/segment?instances=road,sidewalk,building,wall,fence,pole,traffic_light,traffic_sign,vegetation,terrain,sky,person,rider,car,truck,bus,train,motorcycle,bicycle,misc
+```
+Example output:
+```
+{
+    "car": {
+        "xs": "1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1977,1978...
+        "ys": "7883,7884,7885,7886,7887,7888,7889,7890,7891,7892,7893,7894,7895,7896,7897,7898,7899,7900,7901,7902,7903,7904,7905,7906,7907,7908,7909,7910,7911,7912,7913,7914,7915,7916,7917,7918,7919,7920,7921,7922,7923,7924,7925,7926,7927,7928,7929,7883...
+     }
+}
+```
