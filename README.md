@@ -1,4 +1,4 @@
-#INSTALLATION on AWS EC2
+## INSTALLATION on AWS EC2
 
 * sudo apt-get update
 * sudo apt-get install apache2
@@ -43,15 +43,16 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
 * python3 image_process.py
 * chmod 777 ...
 
-vim /var/log/apache2/error.log
+## Watch apache log:
+watch tail -20 /var/log/apache2/error.log
 
-Blur image:
+## Blur image:
 ```
 curl -L -X POST -F 'file=@ladybugImageOutput_00000012.jpg' 0.0.0.0/blur --output image.jpg
 ```
 returns blurred image
 
-Get polygons for each class:
+## Get polygons for each class:
 ```
 curl -L -X POST -F 'file=@ladybugImageOutput_00000012.jpg' 0.0.0.0/segment?instances=road,sidewalk,building,wall,fence,pole,traffic_light,traffic_sign,vegetation,terrain,sky,person,rider,car,truck,bus,train,motorcycle,bicycle,misc
 ```
