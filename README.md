@@ -15,6 +15,9 @@
 * virtualenv flask --python=python3
 * sudo vim /etc/apache2/sites-enabled/000-default.conf:
 ```
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/html
+
 WSGIDaemonProcess flaskapp threads=5
 WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBAL}
 
@@ -24,6 +27,15 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
         Order deny,allow
         Allow from all
 </Directory>
+
+        # Available loglevels: trace8, ..., trace1, debug, info, notice, warn,
+        # error, crit, alert, emerg.
+        # It is also possible to configure the loglevel for particular
+        # modules, e.g.
+        #LogLevel info ssl:warn
+
+        ErrorLog ${APACHE_LOG_DIR}/error.log
+        CustomLog ${APACHE_LOG_DIR}/access.log combined
 ```
 * sudo apachectl restart
 * sudo pip3 install numpy --no-cache-dir
