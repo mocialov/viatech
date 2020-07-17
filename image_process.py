@@ -25,6 +25,7 @@ import piexif
 import PIL.Image
 
 def load_model():
+    print("loading model")
     cfg = get_cfg()
     # add project-specific config (e.g., TensorMask) here if you're not running a model in detectron2's core library
     cfg.merge_from_file(model_zoo.get_config_file(config.DETECTRON2_MODEL ))
@@ -63,5 +64,5 @@ def predict(img, predictor, metadata):
     return PIL.Image.fromarray(out)
 
 
-if __name__ == '__main__':
-    load_model()
+#if __name__ == '__main__':
+#    load_model()

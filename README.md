@@ -37,7 +37,6 @@ WSGIScriptAlias / /var/www/html/flaskapp/flaskapp.wsgi application-group=%{GLOBA
         ErrorLog ${APACHE_LOG_DIR}/error.log
         CustomLog ${APACHE_LOG_DIR}/access.log combined
 ```
-* sudo apachectl restart
 * sudo pip3 install numpy --no-cache-dir
 * sudo pip3 install Pillow --no-cache-dir
 * sudo pip3 install tensorflow --no-cache-dir
