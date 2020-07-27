@@ -141,10 +141,10 @@ errorlog = '-'
 * sudo /etc/init.d/apache2 start
 
 ```
-curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
-curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
-curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
-curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
-curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 0.0.0.0:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 0.0.0.0:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 0.0.0.0:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 0.0.0.0:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 0.0.0.0:8080
 ```
 
