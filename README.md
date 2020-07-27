@@ -141,14 +141,18 @@ errorlog = '-'
 * sudo /etc/init.d/apache2 start
 
 ```
-curl -I --max-time 60 --connect-timeout 60 0.0.0.0:8080
+server_ip = 0.0.0.0
 ```
 
 ```
-curl -i --max-time 60 --connect-timeout 60 -I -s -L -X POST -F "file=@some-image.jpg" 0.0.0.0:8080/blur
+curl -i --max-time 60 --connect-timeout 60 $server_ip:8080
 ```
 
 ```
-curl -i --max-time 60 --connect-timeout 60 -I -s -L -X POST -F "file=@some-image.jpg" 0.0.0.0:8080/segment
+curl -i --max-time 60 --connect-timeout 60 -I -s -L -X POST -F "file=@some-image.jpg" server_ip:8080/blur
+```
+
+```
+curl -i --max-time 60 --connect-timeout 60 -I -s -L -X POST -F "file=@some-image.jpg" server_ip:8080/segment
 ```
 
