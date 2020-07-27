@@ -80,6 +80,71 @@ Example output:
 }
 ```
 
-## Concerns:
-1) models loaded with every request
-2) too much data is sent back for every pixel
+
+
+##Gunicorn
+
+* sudo pip3 install gunicorn
+* #sudo python3 flaskapp.py
+* #sudo gunicorn --bind 0.0.0.0:8080 flaskapp:app
+* sudo vim /etc/systemd/system/flaskrest.service:
+```
+[Unit]
+Description=Gunicorn instance to serve flask application
+After=network.target
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/ubuntu/flaskapp/
+Environment="PATH=/home/ubuntu/flaskapp/flask/bin"
+ExecStart=/usr/local/bin/gunicorn --config gunicorn_config.py wsgi:app
+[Install]
+WantedBy=multi-user.target
+```
+
+* vim gunicorn_config.py:
+```
+import multiprocessing
+bind = "0.0.0.0:8080"
+workers = 1
+#bind = 'unix:flaskrest.sock'
+umask = 0o007
+reload = True
+#logging
+accesslog = '-'
+errorlog = '-'
+```
+
+* #sudo gunicorn --config gunicorn_config.py flaskapp:app
+
+* sudo systemctl restart flaskrest.service
+* sudo systemctl start flaskrest.service
+* sudo systemctl enable flaskrest.service
+* sudo systemctl status flaskrest.service
+
+* sudo vim /etc/apache2/sites-available/flaskrest.conf:
+```
+<VirtualHost *:*>
+
+        ErrorLog ${APACHE_LOG_DIR}/flaskrest-error.log
+        CustomLog ${APACHE_LOG_DIR}/flaskrest-access.log combined
+
+        <Location />
+                ProxyPass unix:/home/ubuntu/flaskapp/flaskrest.sock|http://0.0.0.0:8080
+                ProxyPassReverse unix:/home/ubuntu/flaskapp/flaskrest.sock|http://0.0.0.0:8080
+        </Location>
+</VirtualHost>
+```
+
+* sudo rm /etc/apache2/sites-enabled/flaskrest.conf
+* sudo ln -s /etc/apache2/sites-available/flaskrest.conf /etc/apache2/sites-enabled/
+* sudo /etc/init.d/apache2 start
+
+```
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 &
+curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080 & curl -I --max-time 60 --connect-timeout 60 3.20.0.42:8080
+```
+
