@@ -2,10 +2,13 @@ import config as cfg
 import os
 os.environ['FVCORE_CACHE'] = cfg.PYTORCH_DOWNLOADS_PATH
 os.environ['WEB_CONCURRENCY'] = '1'
+os.environ['MKL_DISABLE_FAST_MM'] = '1'
+os.environ['LRU_CACHE_CAPACITY'] = '1'
+os.environ['FLASK_ENV'] = 'development'
 
 import io
 from flask import send_file, session
-from flask import Flask, flash, request, redirect, url_for, jsonify, json, make_response
+from flask import Flask, flash, request, url_for, jsonify, json, make_response
 from werkzeug.utils import secure_filename
 from image_process import *
 import numpy as np
@@ -17,19 +20,33 @@ import base64
 from instance_segmentation import *
 from skimage import measure
 import base64
-from flask_session import Session
 from flask import *
 import gc
 
 app = Flask(__name__)
 app.secret_key = cfg.SECRET_KEY
 app.debug = True
-app.use_reloader = False
+#app.use_reloader = False
+#app.with_threads = False
+#app.threaded = True
 
 response = None
 predictor = None
 predictor_detectron = None
 temp = 0
+
+@app.before_request
+def handle_chunking():
+    """
+    Sets the "wsgi.input_terminated" environment flag, thus enabling
+    Werkzeug to pass chunked requests as streams.  The gunicorn server
+    should set this, but it's not yet been implemented.
+    """
+
+    transfer_encoding = request.headers.get("Transfer-Encoding", None)
+    if transfer_encoding == u"chunked":
+        request.environ["wsgi.input_terminated"] = True
+
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in cfg.ALLOWED_EXTENSIONS
@@ -63,6 +80,11 @@ def initialize():
 
     if predictor == None:
         predictor = load_model()
+
+@app.route('/', methods=['GET'])
+def get_page():
+    print ("get get")
+    return 'hi'
 
 @app.route('/segment', methods=['POST'])
 def upload_file2():
@@ -143,7 +165,7 @@ def upload_file():
         if 'file' not in request.files:
             print("file not found")
             flash('No file part')
-            return redirect(request.url)
+            return 'no file' ##redirect(request.url)
         print("file found")
         file = request.files['file']
         # if user does not select file, browser also
@@ -151,7 +173,7 @@ def upload_file():
         if file.filename == '':
             print("no selected file")
             flash('No selected file')
-            return redirect(request.url)
+            return 'no file' #redirect(request.url)
         if file and allowed_file(file.filename):
             print("all good")
 
@@ -160,9 +182,11 @@ def upload_file():
             exif_bytes = piexif.dump(metadata)
             #del metadata
             #del exif_bytes
+            #print("returning")
+            #return 'hello'
             processed = predict(Image.open(file), predictor, metadata)
 
-            '''
+            
             imgByteArr = io.BytesIO()
             exif_bytes = piexif.dump(metadata)
             processed.save(imgByteArr, format='JPEG', exif=exif_bytes)
@@ -171,17 +195,18 @@ def upload_file():
             response = make_response(imgByteArr)
             response.headers.set('Content-Type', 'image/jpeg')
             response.headers.set('Content-Disposition', 'attachment', filename='response.jpg')
-            '''
+            
 
             del metadata
             del processed
             del exif_bytes
             #del imgByteArr
             gc.collect()
-            return 'hello'#return response
-        
+            return response
 
-    #if request.method == 'GET':
-    #    return 'Hello from aws'
+
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=80, debug=True)
 
 

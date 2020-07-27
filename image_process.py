@@ -2,8 +2,8 @@ import config
 import torch, torchvision
 from PIL import ImageFilter
 import detectron2
-from detectron2.utils.logger import setup_logger
-setup_logger()
+#from detectron2.utils.logger import setup_logger
+#setup_logger()
 
 import numpy as np
 import cv2
@@ -24,6 +24,8 @@ import time
 import piexif
 import PIL.Image
 
+out = None
+
 def load_model():
     print("loading model")
     cfg = get_cfg()
@@ -33,6 +35,8 @@ def load_model():
     # Find a model from detectron2's model zoo. You can use the https://dl.fbaipublicfiles... url as well
     cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(config.DETECTRON2_MODEL )
     cfg.MODEL.DEVICE='cpu'
+    cfg.DATALOADER.NUM_WORKERS = 1
+    cfg.SOLVER.IMS_PER_BATCH = 1
     predictor = DefaultPredictor(cfg)
     return predictor
 
@@ -62,7 +66,6 @@ def predict(img, predictor, metadata):
         out[a_mask>0] = blur[a_mask>0]
 
     return PIL.Image.fromarray(out)
-
 
 #if __name__ == '__main__':
 #    load_model()
