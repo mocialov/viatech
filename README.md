@@ -149,10 +149,10 @@ curl -i --max-time 60 --connect-timeout 60 $server_ip:8080
 ```
 
 ```
-curl -i --max-time 60 --connect-timeout 60 -I -s -L -X POST -F "file=@some-image.jpg" server_ip:8080/blur
+curl -i --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jpg" server_ip:8080/blur
 ```
 
 ```
-curl -i --max-time 60 --connect-timeout 60 -I -s -L -X POST -F "file=@some-image.jpg" server_ip:8080/segment
+curl -i --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jpg" server_ip:8080/segment
 ```
 
