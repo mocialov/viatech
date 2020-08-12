@@ -111,8 +111,13 @@ def upload_file2():
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        metadata = piexif.load(PIL.Image.open(file).info["exif"])
-        exif_bytes = piexif.dump(metadata)
+        
+        metadata = None
+        exif_bytes = None
+        if "exif" in PIL.Image.open(file).info:
+            metadata = piexif.load(PIL.Image.open(file).info["exif"])
+            exif_bytes = piexif.dump(metadata)
+        
         processed, temp = process_image_detectron2(Image.open(file), predictor_detectron)
         
         all_items_dict = {}

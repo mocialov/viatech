@@ -7,5 +7,7 @@ umask = 0o007
 reload = True
 
 #logging
-accesslog = '-'
-errorlog = '-'
+capture_output = True
+loglevel = 'debug'
+accesslog = 'access.log'
+errorlog = 'error.log'

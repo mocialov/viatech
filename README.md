@@ -143,3 +143,5 @@ curl -i --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jp
 }
 ```
 
+
+1 gunicorn process: RAM (including system)=1.3GB
