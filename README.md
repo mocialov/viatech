@@ -1,3 +1,6 @@
+![image](https://drive.google.com/uc?export=view&id=14Q9ekkDIoz96l5fv0LqA35lwqJLJBhOA)
+
+
 ## INSTALLATION on AWS EC2
 
 * sudo apt-get update
@@ -117,7 +120,7 @@ errorlog = '-'
 * sudo /etc/init.d/apache2 start
 
 ```
-server_ip = 0.0.0.0
+server_ip=0.0.0.0
 ```
 
 ```
@@ -145,5 +148,10 @@ curl -i --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jp
 
 
 1 gunicorn process: RAM (including system)=1.3GB (max 2.5GB)
+
 Uses 100% of all CPUs
+
 No GPU
+
+
+worker=N specifies how many gunicorn processes are running (pgrep gunicorn), which should be N+1 (1 master process and N workers)
