@@ -183,8 +183,11 @@ def upload_file():
             print("all good")
 
             filename = secure_filename(file.filename)
-            metadata = piexif.load(PIL.Image.open(file).info["exif"])
-            exif_bytes = piexif.dump(metadata)
+            metadata = None
+            exif_bytes = None
+            if 'exif' in PIL.Image.open(file).info:
+                metadata = piexif.load(PIL.Image.open(file).info["exif"])
+                exif_bytes = piexif.dump(metadata)
             #del metadata
             #del exif_bytes
             #print("returning")
@@ -193,8 +196,11 @@ def upload_file():
 
             
             imgByteArr = io.BytesIO()
-            exif_bytes = piexif.dump(metadata)
-            processed.save(imgByteArr, format='JPEG', exif=exif_bytes)
+            if metadata != None:
+                exif_bytes = piexif.dump(metadata)
+                processed.save(imgByteArr, format='JPEG', exif=exif_bytes)
+            else:
+                processed.save(imgByteArr, format='JPEG')
             imgByteArr = imgByteArr.getvalue()
             
             response = make_response(imgByteArr)
