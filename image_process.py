@@ -42,7 +42,8 @@ def load_model():
 
 
 #detectron2 prediction and blurring mask
-def predict(img, predictor, metadata):
+def predict(img, predictor, metadata, blurring_parameter=4):
+    objects_blurred = 0
     im = np.asarray(img)
 
     start = time.time()
@@ -51,7 +52,7 @@ def predict(img, predictor, metadata):
     print ("prediction time in seconds: %02d" % (elapsed)) #about 9 seconds per image
 
     out = im.copy()
-    blur = PIL.Image.fromarray(im).filter(ImageFilter.GaussianBlur(4))
+    blur = PIL.Image.fromarray(im).filter(ImageFilter.GaussianBlur(blurring_parameter))
     blur = np.array(blur)
 
     keep_masks = []
@@ -60,12 +61,13 @@ def predict(img, predictor, metadata):
     for idx, detected_class in enumerate(torch.Tensor.cpu(outputs["instances"].pred_classes).detach().numpy()):
         if detected_class in list(config.KNOWN_CLASSES_DETECTRON2.values()):
             keep_masks.append(all_masks[idx])
+            objects_blurred += 1
 
     #apply masks
     for a_mask in keep_masks:
         out[a_mask>0] = blur[a_mask>0]
 
-    return PIL.Image.fromarray(out)
+    return PIL.Image.fromarray(out), objects_blurred
 
 #if __name__ == '__main__':
 #    load_model()

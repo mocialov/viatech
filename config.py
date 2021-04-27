@@ -30,14 +30,23 @@ KNOWN_CLASSES_DETECTRON2 = {
 'truck':7,
 }
 
+KNOWN_CLASSES_CRACK_DETECTOR = {
+'crack': 1,
+'manhole': 2,
+'patch': 3
+}
+
 ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
 
 SECRET_KEY = "\xbe\xc1\xd5\x16\x03\xf87\xdd\xf5\xe7y\x03\xdf1\xac\xca2\x00\xee\x1d\xdc\xc2M+"
 
-PYTORCH_DOWNLOADS_PATH = "/home/ubuntu/.torch/fvcore_cache/"
+PYTORCH_DOWNLOADS_PATH = "/home/vts/.torch/fvcore_cache/"
 
-CITYSCAPES_MODEL_PATH = "/home/ubuntu/flaskapp/train_fine/frozen_inference_graph.pb"
+CITYSCAPES_MODEL_PATH = "/home/vts/flaskapp/train_fine/frozen_inference_graph.pb"
 
 DETECTRON2_MODEL = "COCO-InstanceSegmentation/mask_rcnn_R_50_FPN_3x.yaml"
 
 MODEL_INPUT_SIZE = 513
+
+PASSWORD = 'y5AHfLgaGr56R&tK'
+USERNAME = 'admin'

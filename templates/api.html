@@ -1,0 +1,150 @@
+<html>
+<ul>
+
+
+<code>
+server_ip=10.62.64.60
+</code>
+
+<br/>
+<li>
+API:
+</li>
+<code>
+curl -i --max-time 60 --connect-timeout 60 $server_ip:8080
+</code>
+
+<br/>
+<li>
+BLUR - returns image encoded as binary (Base64). blurring_level parameter specifies how much an image should be blurred range:[0-100] (default is 4):
+</li>
+<code>
+curl -i --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jpg" $server_ip:8080/blur?blurring_level=4
+</code>
+<br/>
+<code>
+curl --remote-name --remote-header-name --write-out "Downloaded %{filename_effective} file" --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jpg" $server_ip:8080/blur?blurring_level=4
+</code>
+
+<br/>
+<li>
+	SEGMENTATION - returns image with coloured segments encoded as binary (Base64) and polygons (e.g. <code>"polygons": "{\"car\": {\"contours\": [[[7679.0, 2258.0... }, \"sidewalk\": {\"contours\": [.....}}</code>):
+</li>
+<code>
+curl -i --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jpg" $server_ip:8080/segment?instances=road,sidewalk,building,wall,fence,pole,traffic_light,traffic_sign,vegetation,terrain,sky,person,rider,car,truck,bus,train,motorcycle,bicycle,misc
+</code>
+
+<br/>
+<li>
+CRACK - returns a flattened list of all the bounding boxes with the format y1, x1, y2, x2, score, class. The list needs to be split into chunks of 6:
+</li>
+<code>
+curl -i --max-time 60 --connect-timeout 60 -s -L -X POST -F "file=@some-image.jpg" -F "username=user" -F "password=password" $server_ip:8080/crack?threshold=0.1
+</code>
+</ul>
+
+Server usage:<br/>
+2.5GB / 62.8GB CPU RAM<br/>
+117MB / 8GB GPU RAM
+
+<br />
+<br />
+Training:
+<table border=1>
+	<tr>
+		<td>
+			Active
+		</td>
+		<td>
+			/training/models/research/kladd/folder_name
+		</td>
+		<td>
+			Batch size
+		</td>
+		<td>
+			Learning rate
+		</td>
+		<td>
+			Optimizer
+		</td>
+		<td>
+			Epochs
+		</td>
+		<td>
+			Model Name
+		</td>
+		<td>
+			Data
+		</td>
+		<td>
+			Shape
+		</td>
+		<td>
+			Augmentations
+		</td>
+		<td>
+			F1-score
+		</td>
+		<td>
+			mAP
+		</td>
+		<td>
+			Graph
+		</td>
+		<td>
+			Comments
+		</td>
+	</tr>
+	<tr>
+		<td>
+			&#10004;
+		</td>
+		<td>
+			ssd_resnet152_v1_fpn_640x640_coco17_tpu-8_constLR0.000035_map_0.12_f1_19/ (11/20/2020)
+		</td>
+		<td>
+			2
+		</td>
+		<td>
+			0.000035 (const)
+		</td>
+		<td>
+			adam_optimizer
+		</td>
+		<td>
+			2K
+		</td>
+		<td>
+			ssd_resnet152_v1_fpn_keras
+		</td>
+		<td>
+			crack images: 279, bounding boxes: 2298
+		</td>
+		<td>
+			640,640,3
+		</td>
+		<td>
+			horizontal(), vertical(), rotation90, brightness(max_delta=0.2), contrast(min_delta=0.8, max_delta=1.25), hue(max_delta=0.02), distort_colour(), saturation(min_delta=0.8, max_delta=1.25)
+		</td>
+		<td>
+			19 (validation)
+		</td>
+		<td>
+			0.12 (validation)
+		</td>
+		<td>
+			Eval loss after 2K epochs: 1.4264
+			<!-- <iframe width="500" height="300" frameborder="0" scrolling="no" src="//plotly.com/~BorisMocialov/3.embed"></iframe> -->
+		</td>
+		<td>
+			-
+		</td>
+	</tr>
+
+</table>
+
+<br/>
+Server training/validation/testing/files:  ssh -N -f -L localhost:(8000/8001/.../8002):localhost:(8000/8001/.../8002) vts@10.62.64.60
+<br/>
+
+</html>
